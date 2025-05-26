@@ -1,6 +1,6 @@
 # Lamson Care Catalogue Website
 Lamson Care showcases health-related products and articles. The website's layout is styled with Tailwind CSS for responsive viewing on any device. 
-Through this website, users can browse products by its category, brand, or name, and view detailed product info along with multi-section articles—all dynamically pulled from Firestore. 
+Through this website, users can browse products by its category, brand, or name using Fuse.js's lightweight fuzzy-search library. Viewing detailed product info, along with multi-section articles are all dynamically pulled from Firestore. 
 Admins have access to a private dashboard (secured with Firebase Auth) where they can add, edit, or delete products and articles in real time. 
 Articles, product descriptions, and product specifications are managed using the Quill.js editor for flexible text formatting.
 
