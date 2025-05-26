@@ -19,3 +19,9 @@ Articles, product descriptions, and product specifications are managed using the
 - **Frontend:** HTML, Tailwind CSS, JavaScript
 - **Backend:** Firebase Firestore, Firebase Auth, Firebase Hosting
 - **Other Tools:** Quill.js, Fuse.js, FontAwesome, Freepik Flaticon
+
+## ❗ Important Info
+- Sensitive Firebase configuration files (such as `config.js`) contain **placeholder values** in this repository for security reasons. To run the project locally, please **create your own `config.js`** file and insert your Firebase credentials.
+- Firebase deployment settings (`.firebaserc`) have been **intentionally excluded** to prevent accidental deployment. If you plan to deploy the project, please **set up and use your own Firebase project**.
+
+**🔥 [Firebase Setup Documentation](https://firebase.google.com/docs/web/setup)**
