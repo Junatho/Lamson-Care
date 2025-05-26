@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dasbor - Admin Lamson Care</title>
+        <link rel="icon" type="image/x-icon" href="/icons/Lamson.png">
+    
+    <script type="module" src="login.js"></script>
+    <script type="module" src="adminDashboard.js"></script>
+    <script type="module" src="SessionTimeout.js"></script>
+    <script type="module" src="adminDatabase.js"></script>
+    <script type="module" src="config.js"></script>
+    <script type="module" src="commonUI.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Barlow:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .font-dm-sans { font-family: 'DM Sans', sans-serif; }
+        .font-barlow { font-family: 'Barlow', sans-serif; }
+    </style>
+</head>
+<body class="font-dm-sans min-h-screen flex flex-col">
+    <nav id="navbar" class="p-4 fixed top-0 w-full z-30 bg-gradient-to-r from-[#c7daf4] to-[#ebebfd] transition-colors duration-300">
+        <div class="w-full px-4 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                    <img src="/icons/Lamson.png" alt="Logo" class="h-10">
+            </div>
+            <div class="flex flex-1 mr-24 justify-center items-center space-x-8 hidden lg:flex">
+                <a href="adminDashboard.html" class="text-[#000CAC] hover:text-[#000CAC] text-2xl font-barlow tracking-wider">DASHBOARD</a>
+                <div class="inline-block h-10 w-0.5 bg-[#034E98] mx-4"></div>
+                <a href="adminArticle.html" class="text-[#034E98] hover:text-[#000CAC] text-2xl font-barlow tracking-wider">ARTIKEL</a>
+                <div class="inline-block h-10 w-0.5 bg-[#034E98] mx-4"></div>
+                <a href="adminProducts.html" class="text-[#034E98] hover:text-[#000CAC] text-2xl font-barlow tracking-wider">DAFTAR PRODUK</a>
+            </div>
+            
+            <button id="sidebar-toggle" class="text-gray-700 hover:text-blue-600 text-3xl">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+	<button id="scrollToTopButton"
+		class="fixed bottom-6 right-4 bg-[#034E98] hover:bg-blue-900 text-white rounded-md px-3 py-2 shadow-lg hidden transition-opacity duration-300 ease-in-out opacity-0 hover:opacity-100 z-30">
+		<i class="fas fa-arrow-up"></i>
+	</button>
+
+    <div id="sidebar-overlay" class="fixed inset-0 bg-gray-100 bg-opacity-50 hidden z-40"></div>
+    
+    <aside id="sidebar" class="fixed right-0 top-0 w-full lg:w-64 h-full bg-gradient-to-r from-[#c7daf4] to-[#ebebfd] shadow-lg transform translate-x-full transition-transform pt-4 p-2 z-50 flex flex-col">
+        <div class="flex items-center justify-between mb-6">
+            <img src="/icons/Lamson.png" alt="Logo" class="h-10 pl-2">
+            <button id="close-sidebar" class="text-3xl text-gray-700 hover:text-blue-600 mr-6"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="space-y-1 flex-grow">
+            <li><a href="adminDashboard.html" class="flex items-center px-4 py-3 bg-[#034E98] text-white font-bold rounded"><i class="fas fa-home mr-3"></i>Dashboard</a></li>
+            <li><a href="adminProducts.html" class="flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded"><i class="fas fa-info-circle mr-3"></i>Daftar Produk</a></li>
+            <li><a href="adminArticle.html" class="flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded"><i class="fas fa-newspaper mr-3"></i>Daftar Artikel</a></li>
+        </ul>
+        <div class="mt-auto">
+            <button id="LogOutButton" class="w-full flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded">
+                <i class="fas fa-sign-out-alt mr-3"></i>Logout
+            </button>
+        </div>
+    </aside>
+
+<section class="mt-16 px-4">
+    <div class="mt-8 px-4">
+        <nav class="text-blue-600 text-lg">
+            Admin / <a href="adminDashboard.html" class="text-blue-600 hover:underline">Dashboard</a>
+        </nav>
+
+        <h1 class="text-3xl font-bold mt-4 mb-2">Admin Dashboard</h1>
+
+        <div id="admin-info" class="mb-4 mt-4 space-y-2">
+        <p><strong>Selamat datang,</strong> <span id="admin-email" class="font-semibold"></span>!</p>
+            <button id="change-password-btn" class="bg-yellow-600 hover:bg-yellow-700  text-white px-4 py-1 rounded text-sm flex items-center gap-2">
+                <i class="fas fa-pen"></i> Ubah Password
+            </button>
+            </div>
+
+        <hr class="h-px my-2 mt-6 lg:mt-0 bg-gray-200 border-0 dark:bg-gray-400">
+        <a href="adminProducts.html" class="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded mt-2 lg:mb-8">Lihat Daftar Produk</a>
+        <a href="adminArticle.html" class="inline-block bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded mt-2">Lihat Artikel</a>
+
+        <div id="password-modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50">
+        <div class="flex items-center justify-center h-full w-full p-4">
+            <div class="bg-white p-6 rounded shadow-lg w-full max-w-md space-y-4">
+            <h2 class="text-xl font-semibold">Ubah Password</h2>
+            <input type="password" id="current-password" placeholder="Password Lama" class="w-full border p-2 rounded" required />
+            <input type="password" id="new-password" placeholder="Password Baru" class="w-full border p-2 rounded" required />
+            <input type="password" id="confirm-password" placeholder="Konfirmasi Password Baru" class="w-full border p-2 rounded" required />
+            <p id="password-message" class="text-sm text-red-600 hidden"></p>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button id="cancel-password-btn" class="px-4 py-2 bg-red-500 hover:bg-red-700 rounded text-white">Batal</button>
+                <button id="confirm-password-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">Simpan Password Baru</button>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="max-w-8xl mx-auto mt-6 lg:mt-0 mb-10 grid grid-cols-1 md:grid-cols-1 gap-6">
+        <div class="p-6 rounded-lg bg-gray-200 border border-gray-400 shadow-xl">
+            <form id="add-product-form" class="space-y-4 text-black">
+                <h1 class="text-2xl font-bold">Daftar Produk Baru</h1>
+                <label class="block text-black font-semibold">Nama Produk <span class="text-red-500">*</span></label>
+                <input type="text" id="name" class="border p-2 w-full rounded bg-white text-black" required>
+            
+                <label class="block text-black font-semibold">Kategori <span class="text-red-500">*</span></label>
+                <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    <label class="flex items-center">
+                        <input type="checkbox" name="category" value="Aromatherapy" class="mr-2"> Aromatherapy
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="category" value="Blood Pressure Monitor" class="mr-2"> Blood Pressure Monitor
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="category" value="Blood Test Device" class="mr-2"> Blood Test Device
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="category" value="Elderly Needs" class="mr-2"> Elderly Needs
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="category" value="Emergency Kit" class="mr-2"> Emergency Kit
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="category" value="Facemask" class="mr-2"> Facemask
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="category" value="Health Aids" class="mr-2"> Health Aids
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="category" value="Medical Apparel" class="mr-2"> Medical Apparel
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="category" value="Medical Gauze" class="mr-2"> Medical Gauze
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="category" value="Mother & Baby Care" class="mr-2"> Mother & Baby Care
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="category" value="Pregnancy Test Device" class="mr-2"> Pregnancy Test Device
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="category" value="Wheelchair" class="mr-2"> Wheelchair
+                    </label> 
+                </div>
+            
+                <label class="block text-black font-semibold">Merek <span class="text-red-500">*</span></label>
+                <input type="text" id="brand" placeholder="Lamson, GEA, Betadine, dll" class="border p-2 w-full rounded bg-white text-black" required>
+            
+                <label class="block text-black font-semibold">Nomor Registrasi / Izin Edar Alkes <span class="text-red-500">*</span></label>
+                <input type="text" id="registrationNumber" placeholder="Bila tidak ada, masukkan ''-''" class="border p-2 w-full rounded bg-white text-black" required>
+            
+                <hr class="border-gray-300">
+                <h2 class="text-xl font-bold text-black">Detail Produk <span class="text-red-500">*</span></h2>
+            
+                <label class="block text-black font-semibold">Deskripsi Produk <span class="text-red-500">*</span></label>
+                <div id="description-editor" class="border bg-white text-black h-72"></div>
+
+                <label class="block text-black font-semibold">Spesifikasi <span class="text-red-500">*</span></label>
+                <div id="specification-editor" class="border bg-white text-black h-72"></div>
+
+                <hr class="border-gray-300">
+                <h2 class="text-xl font-bold text-black">Link Terkait Produk</h2>
+
+                <label class="block text-black font-semibold">Link Gambar 1 <span class="text-red-500">*</span></label>
+                <input type="url" id="image1" placeholder="https://raw.githubusercontent.com/" class="border p-2 w-full rounded bg-white text-black" required>
+            
+                <label class="block text-black font-semibold">Link Gambar 2 <span class="text-red-500">*</span></label>
+                <input type="url" id="image2" placeholder="https://raw.githubusercontent.com/" class="border p-2 w-full rounded bg-white text-black" required>
+            
+                <label class="block text-black font-semibold">Link Gambar 3 <span class="text-red-500">*</span></label>
+                <input type="url" id="image3" placeholder="https://raw.githubusercontent.com/" class="border p-2 w-full rounded bg-white text-black" required>
+            
+                <label class="block text-black font-semibold">Link WhatsApp</label>
+                <span class="italic text-gray-500">Bila tidak ada, kosongkan.</span>
+                <input type="url" id="whatsapp" placeholder="https://api.whatsapp.com/send/?phone=6288210084630" class="border p-2 w-full rounded bg-white text-black">
+            
+                <label class="block text-black font-semibold">Link Tokopedia</label>
+                <span class="italic text-gray-500">Bila tidak ada, kosongkan.</span>
+                <input type="url" id="tokopedia" placeholder="https://www.tokopedia.com/pbm" class="border p-2 w-full rounded bg-white text-black">
+            
+                <label class="block text-black font-semibold">Link Shopee</span></label>
+                <span class="italic text-gray-500">Bila tidak ada, kosongkan.</span>
+                <input type="url" id="shopee" placeholder ="https://shopee.co.id/lamson_official" class="border p-2 w-full rounded bg-white text-black">
+            
+                <hr class="border-gray-300">
+            
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" id="confirm-info" required>
+                    <span class="text-md sm:text-lg text-black">Konfirmasi: Informasi berikut sudah benar <span class="text-red-500">*</span></span>
+                </label>
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" id="recommended">
+                    <span class="text-md sm:text-lg text-black">Apakah produk ini mau direkomendasikan?</span>
+                </label>
+                <span class="text-md sm:text-md text-gray-700 italic">^ Centang bila "Iya"</span>
+                
+                <div class="flex gap-2 pt-4">
+                    <button type="submit" id="submit-btn" class="bg-blue-500 text-white px-4 py-2 w-auto rounded hover:bg-blue-600">Tambahkan Produk</button>
+                </div>
+            </form>
+        </div>        
+    </div>
+</section>
+
+</body>
+</html>

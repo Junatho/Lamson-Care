@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produk - Lamson Care</title>
+	    <link rel="icon" type="image/x-icon" href="/icons/Lamson.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="populateProductPage.js"></script>
+    <script type="module" src="index.js"></script>
+    <script type="module" src="config.js"></script>
+    <script type="module" src="commonUI.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Barlow:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+		.font-dm-sans {
+			font-family: 'DM Sans', sans-serif;
+		}
+		.font-barlow {
+			font-family: 'Barlow', sans-serif;
+		}
+    </style>
+</head>
+
+<body class="font-dm-sans min-h-screen flex flex-col">
+    <nav id="navbar" class="p-4 fixed top-0 w-full z-30 bg-gradient-to-r from-[#c7daf4] to-[#ebebfd] transition-colors duration-300">
+        <div class="w-full px-4 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <a href="index.html">
+                    <img src="/icons/Lamson.png" alt="Logo" class="h-10">
+                </a>
+            </div>
+
+            <div class="flex flex-1 mr-12 justify-center items-center space-x-8 hidden lg:flex">
+                <a href="index.html" class="text-[#034E98] hover:text-[#000CAC] text-2xl font-barlow tracking-wider uppercase">HOME</a>
+                <div class="inline-block h-10 w-0.5 bg-[#034E98] mx-4"></div>
+                <a href="Article.html" class="text-[#034E98] hover:text-[#000CAC] text-2xl font-barlow tracking-wider uppercase">ARTIKEL</a>
+                <div class="inline-block h-10 w-0.5 bg-[#034E98] mx-4"></div>
+                <a href="Search.html" class="text-[#000CAC] hover:text-[#034E98] text-2xl font-barlow tracking-wider uppercase">CARI PRODUK</a>
+            </div>
+
+                <div class="flex items-center space-x-6">
+                <button id="searchbar-toggle" class="text-gray-700 hover:text-blue-600 text-2xl">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button id="sidebar-toggle" class="text-gray-700 hover:text-blue-600 text-3xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div id="searchPopup" class="fixed inset-0 z-40 bg-black bg-opacity-15 hidden">
+    <div class="absolute top-[74px] sm:absolute sm:top-[60px] w-full flex justify-center sm:justify-end sm:pr-6">
+        <div id="searchBox"
+            class="border-2 border-[#0e509a] rounded-xl w-[90%] sm:w-[400px] relative max-w-full">
+        <input id="searchInput"
+                type="text"
+                placeholder="Cari produk..."
+                class="w-full px-4 py-3 rounded-xl font-barlow text-gray-700 border focus:outline-none" />
+        <button id="searchButton"
+                class="absolute right-4 top-2 bg-[#0e509a] text-white font-roboto py-2 px-4 rounded-xl flex items-center justify-center">
+            <img src="/icons/search.png" alt="Search" class="h-5 w-5" />
+        </button>
+        </div>
+    </div>
+    </div>
+
+	<button id="scrollToTopButton"
+		class="fixed bottom-6 right-4 bg-[#034E98] hover:bg-blue-900 text-white rounded-md px-3 py-2 shadow-lg hidden transition-opacity duration-300 ease-in-out opacity-0 hover:opacity-100 z-30">
+		<i class="fas fa-arrow-up"></i>
+	</button>
+
+    <div id="sidebar-overlay" class="fixed inset-0 bg-gray-100 bg-opacity-50 hidden z-40"></div>
+
+    <aside id="sidebar" class="fixed right-0 top-0 w-full lg:w-64 h-full bg-gradient-to-r from-[#c7daf4] to-[#ebebfd] shadow-lg transform translate-x-full transition-transform pt-4 p-2 z-50 flex flex-col">
+        <div class="flex items-center justify-between mb-6">
+            <img src="/icons/Lamson.png" alt="Logo" class="h-10 pl-2">
+            <button id="close-sidebar" class="text-3xl text-gray-700 hover:text-blue-600 mr-6">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <ul class="space-y-1 flex-grow">
+        <li>
+            <a href="index.html" class="flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded">
+            <i class="fas fa-home mr-3"></i>
+            Home
+            </a>
+        </li>
+        <li>
+            <a href="Article.html" class="flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded">
+            <i class="fas fa-newspaper mr-3"></i>
+            Artikel & Jurnal
+            </a>
+        </li>
+        <li>
+            <button type="button" class="w-full flex items-center px-4 py-3 bg-[#034E98] text-white font-bold rounded justify-between" onclick="document.getElementById('product-submenu').classList.toggle('hidden')">
+            <span class="flex items-center">
+                <i class="fas fa-box-open mr-3"></i>
+                Lihat Produk
+            </span>
+            <i class="fas fa-chevron-down"></i>
+            </button>
+            <ul id="product-submenu" class="ml-4 mt-1 space-y-1 hidden">
+            <li>
+                <a href="Search.html" class="flex items-center px-4 py-2 text-[#034E98] hover:bg-gray-200 rounded">
+                <i class="fas fa-box-archive mr-2"></i>
+                Lihat Semua Produk
+                </a>
+            </li>
+            <li>
+                <a href="Category.html" class="flex items-center px-4 py-2 text-[#034E98] hover:bg-gray-200 rounded">
+                <i class="fas fa-list mr-2"></i>
+                Kategori Produk
+                </a>
+            </li>
+            <li>
+                <a href="Brand.html" class="flex items-center px-4 py-2 text-[#034E98] hover:bg-gray-200 rounded">
+                <i class="fas fa-copyright mr-2"></i>
+                Produk dari Merek
+                </a>
+            </li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="tentang-cara-membeli.html" class="flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded">
+            <i class="fas fa-info-circle mr-3"></i>
+            Tentang Kami
+            </a>
+        </li>
+        </ul>
+        <div class="mt-auto">
+            <a href="LoginPage.html" class="flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded">
+                <i class="fas fa-sign-in-alt mr-3"></i>
+                Login
+            </a>
+        </div>
+    </aside>
+
+    <section id="overview" class="section px-8 lg:px-16 mt-20 mx-auto p-6">
+        <nav class="text-sm text-gray-500 mb-4">
+            <a href="index.html" class="hover:underline">Home</a> / 
+            <a href="Brand.html" id="breadcrumb-brand" class="hover:underline">Merek</a> / 
+            <span id="breadcrumb-name"></span>
+        </nav>
+
+        <div class="grid lg:grid-cols-7 gap-4 items-start min-h-screen">
+            <div id="image-gallery" class="lg:col-span-2 lg:sticky lg:top-24">
+                <div class="relative hover:border-4 hover:border-[#c7daf4] shadow-md rounded-lg">
+                    <img id="mainImage" src="/icons/Lamson.png" alt="Product Image" class="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-[24rem] mx-auto" onclick="openModal()">
+                </div>
+                <div class="flex mt-4 space-x-2 overflow-x-auto">
+                    <img src="/icons/Lamson.png" class="w-16 h-16 object-contain cursor-pointer border rounded-lg" onclick="changeImage(this)">
+                    <img src="/icons/Lamson.png" class="w-16 h-16 object-contain cursor-pointer border rounded-lg" onclick="changeImage(this)">
+                    <img src="/icons/Lamson.png" class="w-16 h-16 object-contain cursor-pointer border rounded-lg" onclick="changeImage(this)">
+                </div>
+            </div>
+    
+            <div class="lg:col-span-3 overflow-hidden">
+                <h1 class="text-2xl font-bold mb-2 break-words" id="name"></h1>
+                <p class="text-gray-700 mb-2 break-words" id="category"></p>
+                <p class="text-gray-700 mb-2 break-words" id="brand"></p>
+                <p class="text-gray-700 mb-2 break-words" id="registrationNumber"></p>
+                
+                <hr class="h-px my-2 bg-gray-200 border-0 dark:bg-gray-400">
+
+                <div class="mt-4">
+                    <h2 class="font-semibold inline-block">Deskripsi Produk:</h2>
+                    <p class="break-words" id="description"></p>
+                </div>        
+    
+                <div class="flex flex-col mt-4 border border-gray-300 p-2 pr-3 pl-3 rounded bg-gray-100 shadow-md relative">
+                    <h2 class="font-semibold inline-block">Spesifikasi Produk</h2>
+                        <button id="toggleSpecBtn" 
+                            class="text-blue-700 hover:text-[#0e509a] underline text-sm mt-1 self-start sm:mt-0 sm:absolute sm:right-4 sm:ml-4 md:absolute md:right-4 md:ml-4"
+                            onclick="toggleSpec()"> Lihat Selengkapnya
+                        </button>
+                    <div id="specificationSection" class="hidden mt-2">
+                        <hr class="h-px my-2 bg-gray-200 border-0 dark:bg-gray-400">
+                        <p class="text-gray-700 break-words" id="specification">...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="buy-now-contact" class="lg:col-span-2 lg:sticky lg:top-24 bg-white shadow-lg p-4 rounded-lg border border-2 border-gray-300">
+            <h3 class="text-lg font-semibold">Kontak Kami</h3>
+            <a id="whatsapp-link" href="#" target="_blank" class="hover:bg-[#c7daf4] flex items-center justify-center p-3 bg-white border border-gray-300 rounded-lg w-full mt-2">
+                <img src="/icons/logo-whatsapp.png" class="w-6 h-6 mr-2"> WhatsApp
+            </a>
+
+            <hr class="h-px my-6 bg-gray-100 border-0 dark:bg-gray-300">
+
+            <h3 class="text-lg font-semibold">Beli Sekarang</h3>
+            <a id="tokopedia-link" href="#" target="_blank" class="hover:bg-[#c7daf4] flex items-center justify-center p-3 bg-white border border-gray-300 rounded-lg w-full mt-2">
+                <img src="/icons/logo-tokopedia.png" class="w-6 h-6 mr-2"> Tokopedia
+            </a>
+            <a id="shopee-link" href="#" target="_blank" class="hover:bg-[#c7daf4] flex items-center justify-center p-3 bg-white border border-gray-300 rounded-lg w-full mt-2">
+                <img src="/icons/logo-shopee.png" class="w-6 h-6 mr-2"> Shopee
+            </a>
+            </div>
+        </div>
+    </section>
+            
+    <section class="py-8 bg-white relative">
+        <div class="container mx-auto px-4 md:px-8">
+            
+            <h1 class="relative flex items-center justify-center text-center text-lg sm:text-2xl md:text-3xl lg:text-4xl font-barlow text-[#0e509a] p-4 
+                        before:content-[''] before:flex-grow before:h-[2px] before:bg-[#0e509a] before:mx-4 before:max-w-[170px] md:before:max-w-[700px] 
+                        after:content-[''] after:flex-grow after:h-[2px] after:bg-[#0e509a] after:mx-4 after:max-w-[170px] md:after:max-w-[700px]">
+                REKOMENDASI LAINNYA
+            </h1>
+
+            <div class="relative overflow-hidden pb-2">
+                <div class="relative overflow-hidden px-2">
+                    <div class="w-full max-w-[1080px] mx-auto overflow-hidden">
+                        <div id="carouselWrapper" class="overflow-x-auto sm:overflow-hidden scrollbar-hide">
+                            <div id="carouselContainer"class="flex transition-transform duration-300 ease-in-out">
+                            </div>
+                        </div>
+                        <button id="carouselPrev" 
+                            class="hidden md:flex absolute top-1/2 left-1 md:left-2 transform -translate-y-1/2 rounded-full bg-[#0e509a] text-white w-8 h-8 md:w-10 md:h-10 items-center justify-center hover:bg-[#000CAC]">
+                            <i class="fas fa-chevron-left text-base md:text-xl"></i>
+                        </button>
+
+                        <button id="carouselNext" 
+                            class="hidden md:flex absolute top-1/2 right-5 md:right-2 transform -translate-y-1/2 rounded-full bg-[#0e509a] text-white w-8 h-8 md:w-10 md:h-10 items-center justify-center hover:bg-[#000CAC]">
+                            <i class="fas fa-chevron-right text-base md:text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+        </section>
+
+    <div id="productImageModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50">
+        <div class="w-full h-full flex items-center justify-center p-4">
+            <div class="flex flex-col items-end max-w-4xl max-h-[100vh]">
+
+                <div class="w-full flex justify-end">
+                    <button onclick="closeModal()" 
+                            class="text-4xl sm:text-5xl md:text-6xl text-white hover:text-red-500">
+                        &times;
+                    </button>
+                </div>
+
+                <div class="relative">
+                    <img id="modalMainImage" src="" alt="Product Image" class="max-h-[70vh] w-auto object-contain rounded shadow-lg mx-auto">
+                    <p class="text-white text-sm sm:text-md md:text-md lg:text-md text-center mt-2 italic">
+                        Klik diluar, tekan X, atau tekan Esc untuk menutup gambar produk.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<footer class="bg-gradient-to-r from-[#c7daf4] to-[#ebebfd] text-white py-6 px-6 sm:px-12">
+		<div class="w-full px-4 flex flex-col md:flex-row items-start space-y-6 md:space-y-0">
+				<div class="flex flex-col items-start space-y-4 sm:w-1/2">
+					<img src="/icons/Lamson.png" alt="Logo" class="h-10 sm:h-12">
+					<p class="text-sm sm:text-base text-[#0e509a] font-roboto leading-tight">
+						© 2025 Lamson Care. All rights reserved.<br>
+						WA: +62 882-1008-4630<br>
+						<a href="https://www.flaticon.com/authors/freepik" class="text-xs sm:text-xs">Graphic icons by Freepik - Flaticon</a>
+					</p>
+				</div>
+				
+			<div class="flex flex-col items-start sm:items-start text-left sm:text-left">
+				<h2 class="pb-4 font-barlow uppercase text-xl sm:text-2xl tracking uppercase text-[#0e509a]">Hubungi Kami</h2>
+				<div class="flex gap-6">
+					<a href="https://wa.me/6288210084630" target="_blank">
+						<img src="/icons/logo-whatsapp.png" alt="WhatsApp" class="h-8 w-8 sm:h-12 sm:w-12">
+					</a>
+					<a href="https://www.tokopedia.com/pbm" target="_blank">
+						<img src="/icons/logo-tokopedia.png" alt="Tokopedia" class="h-8 w-8 sm:h-12 sm:w-12">
+					</a>
+					<a href="https://shopee.co.id/lamson_official" target="_blank">
+						<img src="/icons/logo-shopee.png" alt="Shopee" class="h-8 w-8 sm:h-12 sm:w-12">
+					</a>
+				</div> <br>
+			</div>
+		</div>
+	</footer>
+            
+    <script>
+
+    function toggleSpec() {
+        const specSection = document.getElementById('specificationSection');
+        const toggleBtn = document.getElementById('toggleSpecBtn');
+
+        const isHidden = specSection.classList.contains('hidden');
+        specSection.classList.toggle('hidden');
+
+        toggleBtn.textContent = isHidden ? 'Lihat Lebih Sedikit' : 'Lihat Selengkapnya';
+    }
+
+    function addClickListeners() {
+        document.querySelectorAll(".carousel-item").forEach(item => {
+            item.addEventListener("click", function (event) {
+                event.preventDefault();
+                const productId = new URLSearchParams(window.location.search).get('id');
+                window.location.href = `Products.html?id=${productId}`;
+            });
+        });
+    }
+
+    function changeImage(img) {
+        document.getElementById('mainImage').src = img.src;
+
+        const modalImage = document.querySelector('#productImageModal img');
+        if (modalImage) modalImage.src = img.src;
+    }
+
+    function openModal() {
+        const modal = document.getElementById('productImageModal');
+        modal.classList.remove('hidden');
+
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+
+        const mainImageSrc = document.getElementById('mainImage').src;
+        const modalImage = document.querySelector('#productImageModal img');
+        if (modalImage) modalImage.src = mainImageSrc;
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('productImageModal');
+        modal.classList.add('hidden');
+
+        document.body.style.overflow = 'auto';
+        document.documentElement.style.overflow = 'auto';
+    }
+
+    document.addEventListener('touchmove', preventScroll, { passive: false });
+    function preventScroll(e) {
+        if (!document.getElementById('productImageModal').classList.contains('hidden')) {
+            e.preventDefault();
+        }
+    }
+
+    document.getElementById('productImageModal').addEventListener('click', function(e) {
+        const img = this.querySelector('img');
+        if (!img.contains(e.target)) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        const modal = document.getElementById('productImageModal');
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeModal();
+        }
+    });
+
+    </script>
+</body>
+</html>
+    

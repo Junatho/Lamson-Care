@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang Kami & Cara Membeli - Lamson Care</title>
+    <link rel="icon" type="image/x-icon" href="/icons/Lamson.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+    <script type="module" src="search.js"></script>
+    <script type="module" src="config.js"></script>
+    <script type="module" src="commonUI.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Barlow:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .font-dm-sans { font-family: 'DM Sans', sans-serif; }
+        .font-barlow { font-family: 'Barlow', sans-serif; }
+    </style>
+</head>
+<body class="font-dm-sans min-h-screen flex flex-col">
+    <nav id="navbar" class="p-4 fixed top-0 w-full z-30 bg-gradient-to-r from-[#c7daf4] to-[#ebebfd] transition-colors duration-300">
+        <div class="w-full px-4 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <a href="index.html">
+                    <img src="/icons/Lamson.png" alt="Logo" class="h-10">
+                </a>
+            </div>
+
+            <div class="flex flex-1 mr-12 justify-center items-center space-x-8 hidden lg:flex">
+                <a href="index.html" class="text-[#034E98] hover:text-[#000CAC] text-2xl font-barlow tracking-wider uppercase">HOME</a>
+                <div class="inline-block h-10 w-0.5 bg-[#034E98] mx-4"></div>
+                <a href="Article.html" class="text-[#034E98] hover:text-[#000CAC] text-2xl font-barlow tracking-wider uppercase">ARTIKEL</a>
+                <div class="inline-block h-10 w-0.5 bg-[#034E98] mx-4"></div>
+                <a href="Search.html" class="text-[#034E98] hover:text-[#000CAC] text-2xl font-barlow tracking-wider uppercase">CARI PRODUK</a>
+            </div>
+
+                <div class="flex items-center space-x-6">
+                <button id="searchbar-toggle" class="text-gray-700 hover:text-blue-600 text-2xl">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button id="sidebar-toggle" class="text-gray-700 hover:text-blue-600 text-3xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div id="searchPopup" class="fixed inset-0 z-40 bg-black bg-opacity-15 hidden">
+    <div class="absolute top-[74px] sm:absolute sm:top-[60px] w-full flex justify-center sm:justify-end sm:pr-6">
+        <div id="searchBox"
+            class="border-2 border-[#0e509a] rounded-xl w-[90%] sm:w-[400px] relative max-w-full">
+        <input id="searchInput"
+                type="text"
+                placeholder="Cari produk..."
+                class="w-full px-4 py-3 rounded-xl font-barlow text-gray-700 border focus:outline-none" />
+        <button id="searchButton"
+                class="absolute right-4 top-2 bg-[#0e509a] text-white font-roboto py-2 px-4 rounded-xl flex items-center justify-center">
+            <img src="/icons/search.png" alt="Search" class="h-5 w-5" />
+        </button>
+        </div>
+    </div>
+    </div>
+
+	<button id="scrollToTopButton"
+		class="fixed bottom-6 right-4 bg-[#034E98] hover:bg-blue-900 text-white rounded-md px-3 py-2 shadow-lg hidden transition-opacity duration-300 ease-in-out opacity-0 hover:opacity-100 z-30">
+		<i class="fas fa-arrow-up"></i>
+	</button>
+
+    <div id="sidebar-overlay" class="fixed inset-0 bg-gray-100 bg-opacity-50 hidden z-40"></div>
+
+    <aside id="sidebar" class="fixed right-0 top-0 w-full lg:w-64 h-full bg-gradient-to-r from-[#c7daf4] to-[#ebebfd] shadow-lg transform translate-x-full transition-transform pt-4 p-2 z-50 flex flex-col">
+        <div class="flex items-center justify-between mb-6">
+            <img src="/icons/Lamson.png" alt="Logo" class="h-10 pl-2">
+            <button id="close-sidebar" class="text-3xl text-gray-700 hover:text-blue-600 mr-6">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <ul class="space-y-1 flex-grow">
+        <li>
+            <a href="index.html" class="flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded">
+            <i class="fas fa-home mr-3"></i>
+            Home
+            </a>
+        </li>
+        <li>
+            <a href="Article.html" class="flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded">
+            <i class="fas fa-newspaper mr-3"></i>
+            Artikel & Jurnal
+            </a>
+        </li>
+        <li>
+            <button type="button" class="w-full flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded justify-between" onclick="document.getElementById('product-submenu').classList.toggle('hidden')">
+            <span class="flex items-center">
+                <i class="fas fa-box-open mr-3"></i>
+                Lihat Produk
+            </span>
+            <i class="fas fa-chevron-down"></i>
+            </button>
+            <ul id="product-submenu" class="ml-4 mt-1 space-y-1 hidden">
+            <li>
+                <a href="Search.html" class="flex items-center px-4 py-2 text-[#034E98] hover:bg-gray-200 rounded">
+                <i class="fas fa-box-archive mr-2"></i>
+                Lihat Semua Produk
+                </a>
+            </li>
+            <li>
+                <a href="Category.html" class="flex items-center px-4 py-2 text-[#034E98] hover:bg-gray-200 rounded">
+                <i class="fas fa-list mr-2"></i>
+                Kategori Produk
+                </a>
+            </li>
+            <li>
+
+                <a href="Brand.html" class="flex items-center px-4 py-2 text-[#034E98] hover:bg-gray-200 rounded">
+                <i class="fas fa-copyright mr-2"></i>
+                Produk dari Merek
+                </a>
+            </li>
+            </ul>
+        </li>
+                <a href="tentang-cara-membeli.html" class="flex items-center px-4 py-3 bg-[#034E98] text-white font-bold rounded">
+                    <i class="fas fa-info-circle mr-3"></i>
+                    Tentang Kami
+                </a>
+            </li>
+        </ul>
+        <div class="mt-auto">
+            <hr class="h-px my-2 bg-gray-200 border-0 dark:bg-[#034E98]">
+            <a href="LoginPage.html" class="flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded">
+                <i class="fas fa-sign-in-alt mr-3"></i>
+                Login
+            </a>
+        </div>
+    </aside>
+	
+    <section class="container mx-auto px-4 mt-24 mb-12">
+        <div class="flex flex-col lg:flex-row lg:space-x-12 relative">
+
+            <div class="w-full">
+            <div>
+                <h1 class="text-2xl sm:text-2xl md:text-2xl lg:text-3xl font-bold text-black mt-4 mb-2">
+                Informasi Cara Membeli & Tentang Kami
+                </h1>
+                <p class="text-md text-gray-600 font-medium mb-4">
+                Lamson Care | Diperbarui: 23 Mei 2025
+                </p>
+            </div>
+
+            <hr class="h-px my-2 bg-gray-200 border-0 dark:bg-gray-400">
+            <div class="prose prose-img:rounded-xl prose-img:shadow-md space-y-12">
+
+            <section>
+            <h2 class="text-2xl font-semibold text-black pt-4 mb-4">Cara Membeli Produk Kami</h2>
+
+            <ol class="list-decimal pl-6 space-y-2 text-gray-800">
+                <li>Cari produk yang Anda butuhkan melalui kolom pencarian berdasarkan <b>nama, kategori, atau merek.</b></li>
+                <li>Buka halaman produk untuk membaca detail lengkap produk, termasuk deskripsi, spesifikasi, foto, dan link pembelian.</li>
+                <li>Periksa apakah produk kami tersedia di 
+                    <a href="https://www.tokopedia.com/pbm" target="_blank" class="text-green-700 hover:underline font-semibold">Tokopedia</a> 
+                atau 
+                    <a href="https://shopee.co.id/lamson_official" target="_blank" class="text-orange-600 hover:underline font-semibold">Shopee</a> 
+                melalui tombol di halaman produk.
+                </li>
+                <li>
+                Jika produk <b>tersedia</b> di Tokopedia atau Shopee kami, Anda dapat <b>langsung bertransaksi</b> melalui platform tersebut. 
+                <b>Alternatifnya</b>, Anda juga bisa menghubungi kami lewat <b>WhatsApp</b> perihal produk yang ingin dibeli.    
+                </li>
+                <li>
+                Jika produk <b>tidak tersedia</b> di Tokopedia ataupun Shopee dan <b><u><i>hanya tersedia di website ini</i></u></b>, silakan kirim pesan langsung (DM) ke 
+                    <a href="https://wa.me/6288210084630" target="_blank" class="text-green-500 hover:underline font-semibold">WhatsApp official kami</a>.
+                </li>
+                <li>Sebutkan nama produk yang ingin dibeli dan <b>alamat pengiriman</b> Anda. Kami akan membalas dengan informasi harga produk dan ongkos kirim (ongkir).</li>
+                <li>Setelah menyetujui total biaya, <b>lakukan pembayaran ke rekening PT. Prima Bumi Mandiri</b> dan kirimkan <b>bukti transfer</b> ke WhatsApp kami.</li>
+                <li>Pesanan Anda akan segera kami proses dan kirim. <b>Bukti pengiriman</b> akan kami kirimkan melalui WhatsApp.</li>
+            </ol>
+            </section>
+
+                <section>
+                <h2 class="text-2xl font-semibold text-black mb-2">Tentang Kami</h2>
+                <p>
+                    PT. Prima Bumi Mandiri menyediakan beragam macam peralatan kesehatan yang berkualitas.
+                </p>
+                </section>
+
+                <section class="bg-[#f0f6ff] px-6 py-6 rounded-xl shadow-md mt-10">
+                    <div class="flex flex-col md:flex-row md:justify-between md:space-x-8">                        
+                        <div class="mb-6 md:mb-0 md:w-1/2">
+                        <h2 class="text-2xl font-semibold text-[#0e509a] mb-4 flex items-center">
+                            <i class="fa-regular fa-clock mr-2"></i> Jam Operasional
+                        </h2>
+                        <ul class="text-gray-700 space-y-2 text-md sm:text-lg">
+                            <li><b>Senin – Jumat:</b> 09.00 – 14.00 WIB</li>
+                            <li><b>Sabtu, Minggu & Hari Libur:</b> Tutup</li>
+                        </ul>
+                        </div>
+                        <div class="md:w-1/2">
+                        <h2 class="text-2xl font-semibold text-[#0e509a] mb-4 flex items-center">
+                            <i class="fa-solid fa-phone mr-2"></i> Kontak Kami
+                        </h2>
+                        <ul class="text-gray-700 space-y-2 text-md sm:text-lg">
+                            <li><b>WhatsApp:</b> <a href="https://wa.me/6288210084630" class="text-blue-600 hover:underline">+62 882-1008-4630</a></li>
+                            <li><b>Email:</b> <a href="mailto:info@example.com" class="text-blue-600 hover:underline">mail@carelamson.id</a></li>
+                        </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                <h2 class="text-2xl font-semibold text-black mb-2">Alamat & Lokasi</h2>
+                <p class="font-bold text-lg">
+                    PT. Prima Bumi Mandiri - Jl. Kaji No. 17F, Jakarta 10130
+                </p>
+                    <div class="w-full h-[400px] mt-4 mb-4 rounded-xl overflow-hidden shadow-lg">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.7237146424695!2d106.81278307498994!3d-6.167739993819533!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f678363d229b%3A0x56b9330081c50717!2sPT.%20Prima%20Bumi%20Mandiri!5e0!3m2!1sen!2sid!4v1747986071345!5m2!1sen!2sid" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </section>
+            </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="flex-grow container"></section>
+
+	<footer class="bg-gradient-to-r from-[#c7daf4] to-[#ebebfd] text-white py-6 px-6 sm:px-12">
+		<div class="w-full px-4 flex flex-col md:flex-row items-start space-y-6 md:space-y-0">
+				<div class="flex flex-col items-start space-y-4 sm:w-1/2">
+					<img src="/icons/Lamson.png" alt="Logo" class="h-10 sm:h-12">
+					<p class="text-sm sm:text-base text-[#0e509a] font-roboto leading-tight">
+						© 2025 Lamson Care. All rights reserved.<br>
+						WA: +62 882-1008-4630<br>
+						<a href="https://www.flaticon.com/authors/freepik" class="text-xs sm:text-xs">Graphic icons by Freepik - Flaticon</a>
+					</p>
+				</div>
+				
+			<div class="flex flex-col items-start sm:items-start text-left sm:text-left">
+				<h2 class="pb-4 font-barlow uppercase text-xl sm:text-2xl tracking uppercase text-[#0e509a]">Hubungi Kami</h2>
+				<div class="flex gap-6">
+					<a href="https://wa.me/6288210084630" target="_blank">
+						<img src="/icons/logo-whatsapp.png" alt="WhatsApp" class="h-8 w-8 sm:h-12 sm:w-12">
+					</a>
+					<a href="https://www.tokopedia.com/pbm" target="_blank">
+						<img src="/icons/logo-tokopedia.png" alt="Tokopedia" class="h-8 w-8 sm:h-12 sm:w-12">
+					</a>
+					<a href="https://shopee.co.id/lamson_official" target="_blank">
+						<img src="/icons/logo-shopee.png" alt="Shopee" class="h-8 w-8 sm:h-12 sm:w-12">
+					</a>
+				</div> <br>
+			</div>
+		</div>
+	</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    const tocToggle = document.getElementById("toc-toggle");
+    const toc = document.getElementById("article-toc");
+    let isTocOpen = false;
+
+    const toggleToc = () => {
+        toc.classList.toggle("hidden");
+        isTocOpen = !isTocOpen;
+        tocToggle.innerHTML = isTocOpen ? "×" : "&lt;";
+        tocToggle.classList.toggle("bg-[#0e509a]", !isTocOpen);
+        tocToggle.classList.toggle("bg-red-800", isTocOpen);
+    };
+
+    tocToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleToc();
+    });
+
+    document.addEventListener("click", (e) => {
+        const clickedOutside = !toc.contains(e.target) && !tocToggle.contains(e.target);
+        if (isTocOpen && clickedOutside) {
+        toggleToc();
+        }
+    });
+    });
+</script>
+
+</body>
+</html>

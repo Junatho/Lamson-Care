@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin - Lamson Care</title>
+        <link rel="icon" type="image/x-icon" href="/icons/Lamson.png">
+    <script type="module" src="adminDatabase.js"></script>
+    <script type="module" src="config.js"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Barlow:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .font-dm-sans { font-family: 'DM Sans', sans-serif; }
+        .font-barlow { font-family: 'Barlow', sans-serif; }
+    </style>
+</head>
+<body class="font-dm-sans min-h-screen flex flex-col">
+
+<section class="relative bg-cover bg-center min-h-screen" style="background-image: url('/icons/landing.png');">
+    <div class="absolute inset-0 bg-black opacity-75"></div>
+
+    <div class="relative z-10 flex items-center justify-center min-h-screen px-4 p-6">
+        <div class="w-full max-w-sm bg-white rounded-xl shadow-lg p-8 space-y-6">
+
+            <div class="text-center">
+                <img src="/icons/Lamson.png" alt="Logo" class="h-22 pb-2">
+            </div>
+
+            <div class="text-center text-sm space-y-4">
+                <p><span class="font-semibold text-2xl">Welcome to Lamson Care!</span></p>
+                <p><span class="font-semibold">Halaman login ini hanya untuk </span><span class="text-red-600 font-bold">admin</span><span class="font-semibold"> saja.</span></p>
+                <p><span class="font-semibold">Bukan Admin?</span>
+                    <a href="index.html" class="text-blue-500 font-bold underline hover:text-blue-700">Klik untuk kembali.</a>
+                </p>
+            </div>
+
+            <hr class="h-px my-2 mt-6 lg:mt-0 bg-gray-200 border-0 dark:bg-gray-300">
+
+            <form id="login-form" class="space-y-4">
+            <p><span class="font-semibold text-xl">Masukkan Kredensial Anda</span></p>
+            <div>
+                <label for="email" class="sr-only">Email</label>
+                <input id="email" type="text" placeholder="Email"
+                class="w-full pl-4 pr-12 py-3 border border-gray shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                required>
+            </div>
+            <div>
+                <label for="password" class="sr-only">Password</label>
+                <input id="password" type="password" placeholder="Password"
+                class="w-full pl-4 pr-12 py-3 border border-gray shadow-lg rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                required>
+            </div>
+            <div class="text-center">
+            <button id="forgotPasswordBtn" type="button" class="text-sm text-blue-600 hover:underline">
+                Forgot password?
+            </button>
+            </div>
+            <button id="submit" type="submit"
+                class="w-full bg-[#034E98] hover:bg-[#000CAC] text-white font-bold py-3 rounded-lg transition-colors duration-300">
+                Log In
+            </button>
+            <div class="pt-4 text-center text-xs text-gray-800">
+                © 2025 Lamson Care. All rights reserved.
+            </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script type="module" src="login.js" defer></script>
+</script>
+
+</body>
+</html>

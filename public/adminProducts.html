@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Produk - Admin Lamson Care</title>
+        <link rel="icon" type="image/x-icon" href="/icons/Lamson.png">
+    <script type="module" src="adminDatabase.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="config.js"></script>
+    <script type="module" src="commonUI.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Barlow:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .font-dm-sans { font-family: 'DM Sans', sans-serif; }
+        .font-barlow { font-family: 'Barlow', sans-serif; }
+    </style>
+</head>
+<body class="font-dm-sans min-h-screen flex flex-col">
+    <nav id="navbar" class="p-4 fixed top-0 w-full z-30 bg-gradient-to-r from-[#c7daf4] to-[#ebebfd] transition-colors duration-300">
+        <div class="w-full px-4 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <img src="/icons/Lamson.png" alt="Logo" class="h-10">
+        </div>
+
+            <div class="flex flex-1 mr-24 justify-center items-center space-x-8 hidden lg:flex">
+                <a href="adminDashboard.html" class="text-[#034E98] hover:text-[#000CAC] text-2xl font-barlow tracking-wider">DASHBOARD</a>
+                <div class="inline-block h-10 w-0.5 bg-[#034E98] mx-4"></div>
+                <a href="adminArticle.html" class="text-[#034E98] hover:text-[#000CAC] text-2xl font-barlow tracking-wider">ARTIKEL</a>
+                <div class="inline-block h-10 w-0.5 bg-[#034E98] mx-4"></div>
+                <a href="adminProducts.html" class="text-[#000CAC] hover:text-[#000CAC] text-2xl font-barlow tracking-wider">DAFTAR PRODUK</a>
+            </div>
+            
+            <button id="sidebar-toggle" class="text-gray-700 hover:text-blue-600 text-3xl">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+	<button id="scrollToTopButton"
+		class="fixed bottom-6 right-4 bg-[#034E98] hover:bg-blue-900 text-white rounded-md px-3 py-2 shadow-lg hidden transition-opacity duration-300 ease-in-out opacity-0 hover:opacity-100 z-30">
+		<i class="fas fa-arrow-up"></i>
+	</button>
+
+    <div id="sidebar-overlay" class="fixed inset-0 bg-gray-100 bg-opacity-50 hidden z-40"></div>
+    
+    <aside id="sidebar" class="fixed right-0 top-0 w-full lg:w-64 h-full bg-gradient-to-r from-[#c7daf4] to-[#ebebfd] shadow-lg transform translate-x-full transition-transform pt-4 p-2 z-50 flex flex-col">
+        <div class="flex items-center justify-between mb-6">
+            <img src="/icons/Lamson.png" alt="Logo" class="h-10 pl-2">
+            <button id="close-sidebar" class="text-3xl text-gray-700 hover:text-blue-600 mr-6"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="space-y-1 flex-grow">
+            <li><a href="adminDashboard.html" class="flex items-center px-4 py-3 bg-[#034E98] text-white font-bold rounded"><i class="fas fa-home mr-3"></i>Dashboard</a></li>
+            <li><a href="adminProducts.html" class="flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded"><i class="fas fa-info-circle mr-3"></i>Daftar Produk</a></li>
+            <li><a href="adminArticle.html" class="flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded"><i class="fas fa-newspaper mr-3"></i>Daftar Artikel</a></li>
+        </ul>
+        <div class="mt-auto">
+            <button id="LogOutButton" class="w-full flex items-center px-4 py-3 text-[#034E98] hover:bg-gray-200 rounded">
+                <i class="fas fa-sign-out-alt mr-3"></i>Logout
+            </button>
+        </div>
+    </aside>
+
+<section class="mt-16 px-4">
+    <div class="mt-8 px-4">
+        <nav class="text-blue-600 text-lg">
+            Admin / <a href="adminDashboard.html" class="text-blue-600 hover:underline">Dashboard /</a> <a href="adminProducts.html" class="text-blue-600 hover:underline">Daftar Produk</a>
+        </nav>
+
+        <h1 class="text-3xl font-bold mt-4 mb-2">Daftar Produk</h1>
+
+        <div id="admin-info" class="mb-4 mt-4 space-y-2">
+        <p><strong>Selamat datang,</strong> <span id="admin-email" class="font-semibold"></span>!</p>
+            <button id="change-password-btn" class="bg-yellow-600 hover:bg-yellow-700  text-white px-4 py-1 rounded text-sm flex items-center gap-2">
+                <i class="fas fa-pen"></i> Ubah Password
+            </button>
+            </div>
+
+        <hr class="h-px my-2 mt-6 lg:mt-0 bg-gray-200 border-0 dark:bg-gray-400">
+        <a href="adminDashboard.html" class="inline-block bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded mt-2 lg:mb-8">Kembali ke Dashboard</a>
+        <a href="adminArticle.html" class="inline-block bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded mt-2">Lihat Artikel</a>
+
+        <div id="password-modal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50">
+        <div class="flex items-center justify-center h-full w-full p-4">
+            <div class="bg-white p-6 rounded shadow-lg w-full max-w-md space-y-4">
+            <h2 class="text-xl font-semibold">Ubah Password</h2>
+            <input type="password" id="current-password" placeholder="Password Lama" class="w-full border p-2 rounded" required />
+            <input type="password" id="new-password" placeholder="Password Baru" class="w-full border p-2 rounded" required />
+            <input type="password" id="confirm-password" placeholder="Konfirmasi Password Baru" class="w-full border p-2 rounded" required />
+            <p id="password-message" class="text-sm text-red-600 hidden"></p>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button id="cancel-password-btn" class="px-4 py-2 bg-red-500 hover:bg-red-700 rounded text-white">Batal</button>
+                <button id="confirm-password-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">Simpan Password Baru</button>
+            </div>
+            </div>
+        </div>
+        </div>
+
+    <div class="max-w-8xl mx-auto mt-4 lg:mt-0 mb-10">
+        <div>
+            <div id="filter-bar"
+                class="inline-flex flex-wrap items-end gap-4 mb-6 bg-gray-50 py-4 px-4 border border-gray-300 rounded-lg shadow-md max-w-full">
+                
+                <div class="flex flex-col w-full sm:w-1/3 md:w-1/4">
+                <label for="filter-category" class="text-sm font-semibold text-gray-700 mb-1">Filter Kategori</label>
+                <select id="filter-category" class="border p-2 rounded w-full">
+                </select>
+                </div>
+
+                <div class="flex flex-col w-full sm:w-1/3 md:w-1/4">
+                <label for="filter-brand" class="text-sm font-semibold text-gray-700 mb-1">Filter Brand</label>
+                <select id="filter-brand" class="border p-2 rounded w-full">
+                </select>
+                </div>
+
+                <div class="flex flex-col w-full sm:w-1/3 md:w-1/4">
+                <label for="filter-name" class="text-sm font-semibold text-gray-700 mb-1">Nama Produk</label>
+                <input id="filter-name" type="text" placeholder="Cari produk..." class="border p-2 rounded w-full">
+                </div>
+
+                <div class="flex flex-col w-full sm:w-auto">
+                <label class="invisible select-none text-sm font-semibold mb-1">Reset</label>
+                <button id="reset-filters"
+                    class="bg-gray-500 text-white hover:bg-gray-700 px-4 py-2 rounded text-sm w-full sm:w-auto">
+                    Reset Filter
+                </button>
+                </div>
+            </div>
+        </div>
+
+    <div class="overflow-x-auto w-full">
+      <table class="w-full border-collapse border border-gray-300 min-w-[800px]">
+        <thead>
+          <tr class="bg-gradient-to-r from-[#c7daf4] to-[#ebebfd]">
+            <th class="border p-2 text-sm">ID</th>
+            <th class="border p-2 text-sm">Nama Produk</th>
+            <th class="border p-2 text-sm">Kategori</th>
+            <th class="border p-2 text-sm">Merek</th>
+            <th class="border p-2 text-sm">Nomor Registrasi / Izin Edar Alkes</th>
+            <th class="border p-2 text-sm">Deskripsi</th>
+            <th class="border p-2 text-sm">Spesifikasi</th>
+            <th class="border p-2 text-sm">Gambar Produk</th>
+            <th class="border p-2 text-sm">Link Toko</th>
+            <th class="border p-2 text-sm">Direkomendasi</th>
+            <th class="border p-2 text-sm">Ubah/Hapus</th>
+          </tr>
+        </thead>
+        <tbody id="product-list">
+        </tbody>
+      </table>
+    </div>
+</div>
+
+</section>
+
+    <div id="textModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden p-4" onclick="closeModal(event)">
+        <div id="modalBox" class="bg-white p-5 rounded-lg w-full max-w-md lg:max-w-xl shadow-lg relative" onclick="event.stopPropagation()">
+            <h2 id="modalType" class="text-lg font-bold mb-1"></h2>
+            <h3 id="modalProductName" class="text-sm font-semibold text-gray-600 mb-3"></h3>
+
+            <div id="modalContentWrapper" class="overflow-y-auto">
+                <div id="modalContent" class="text-sm space-y-2"></div>
+            </div>
+
+            <button onclick="closeModal()" class="mt-4 bg-red-500 text-white px-4 py-2 rounded w-full sm:w-auto">
+                Tutup
+            </button>
+        </div>
+    </div>
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-lg">
+            <h2 id="modalTitle" class="text-lg font-semibold"></h2>
+            <div id="modalImages" class="flex gap-2 overflow-x-auto mt-4"></div>
+            <button onclick="closeImageModal()" class="mt-4 px-4 py-2 bg-red-500 text-white rounded">Close</button>
+        </div>
+    </div>
+    
+    <div id="modifyModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+        <div id="modifyModalBox" class="bg-white rounded-lg shadow-lg w-11/12 md:w-3/4 lg:w-1/2 p-6">
+            <h2 class="text-lg font-bold mb-4">Modify Product</h2>
+            <hr>
+            <div id="modifyModalContentWrapper" class="overflow-auto max-h-[75vh]">
+                <label class="block text-sm sm:text-lg font-medium pt-4">Nama Produk <span class="text-red-500">*</span></label>
+                <input id="modify-name" type="text" class="w-full p-2 border rounded mb-2">
+
+                <label class="block text-black font-semibold">Kategori <span class="text-red-500">*</span></label>
+                <div id="modify-category-container" class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-2">
+
+                    <label class="flex items-center text-xs sm:text-sm md:text-base">
+                        <input type="checkbox" name="category" value="Aromatherapy" class="mr-2" required> Aromatherapy
+                    </label>
+                    <label class="flex items-center text-xs sm:text-sm md:text-base">
+                        <input type="checkbox" name="category" value="Blood Pressure Monitor" class="mr-2" required> Blood Pressure Monitor
+                    </label>
+                    <label class="flex items-center text-xs sm:text-sm md:text-base">
+                        <input type="checkbox" name="category" value="Blood Test Device" class="mr-2" required> Blood Test Device
+                    </label>
+                    <label class="flex items-center text-xs sm:text-sm md:text-base">
+                        <input type="checkbox" name="category" value="Elderly Needs" class="mr-2" required> Elderly Needs
+                    </label>
+                    <label class="flex items-center text-xs sm:text-sm md:text-base">
+                        <input type="checkbox" name="category" value="Emergency Kit" class="mr-2" required> Emergency Kit
+                    </label>
+                    <label class="flex items-center text-xs sm:text-sm md:text-base">
+                        <input type="checkbox" name="category" value="Facemask" class="mr-2" required> Facemask
+                    </label>
+                    <label class="flex items-center text-xs sm:text-sm md:text-base">
+                        <input type="checkbox" name="category" value="Health Aids" class="mr-2" required> Health Aids
+                    </label>
+                    <label class="flex items-center text-xs sm:text-sm md:text-base">
+                        <input type="checkbox" name="category" value="Medical Apparel" class="mr-2" required> Medical Apparel
+                    </label>
+                    <label class="flex items-center text-xs sm:text-sm md:text-base">
+                        <input type="checkbox" name="category" value="Medical Gauze" class="mr-2" required> Medical Gauze
+                    </label>
+                    <label class="flex items-center text-xs sm:text-sm md:text-base">
+                        <input type="checkbox" name="category" value="Mother & Baby Care" class="mr-2" required> Mother & Baby Care
+                    </label>
+                    <label class="flex items-center text-xs sm:text-sm md:text-base">
+                        <input type="checkbox" name="category" value="Pregnancy Test Device" class="mr-2" required> Pregnancy Test Device
+                    </label>
+                    <label class="flex items-center text-xs sm:text-sm md:text-base">
+                        <input type="checkbox" name="category" value="Wheelchair" class="mr-2" required> Wheelchair
+                    </label>
+                </div>
+            
+                <label class="block text-sm sm:text-lg font-medium pt-4">Merek <span class="text-red-500">*</span></label>
+                <input id="modify-brand" type="text" class="w-full p-2 border rounded mb-2">
+
+                <label class="block text-sm sm:text-lg font-medium pt-4">Nomor Registrasi / Izin Edar Alkes <span class="text-red-500">*</span></label>
+                <span class="italic text-gray-500">Bila tidak ada, masukkan "-"</span>
+                <input id="modify-registrationNumber" type="text" class="w-full p-2 border rounded mb-2">
+
+                <label class="block text-sm sm:text-lg font-medium pt-4">Deskripsi Produk <span class="text-red-500">*</span></label>
+                <div id="modify-description-editor" class="border bg-white text-black h-72"></div>
+
+                <label class="block text-sm sm:text-lg font-medium pt-4">Spesifikasi <span class="text-red-500">*</span></label>
+                <div id="modify-specification-editor" class="border bg-white text-black h-72"></div>
+
+                <label class="block text-sm sm:text-lg font-medium pt-4">Link Gambar (URL) <span class="text-red-500">*</span></label>
+                <input id="modify-image1" type="text" class="w-full p-2 border rounded mb-2">
+                <input id="modify-image2" type="text" class="w-full p-2 border rounded mb-2">
+                <input id="modify-image3" type="text" class="w-full p-2 border rounded mb-2">
+
+                <label class="block text-sm sm:text-lg font-medium pt-4">Link WhatsApp</label>
+                <span class="italic text-gray-500">Bila tidak ada, kosongkan.</span>
+                <input id="modify-whatsapp" type="text" class="w-full p-2 border rounded mb-2">
+
+                <label class="block text-sm sm:text-lg font-medium pt-4">Link Tokopedia</label>
+                <span class="italic text-gray-500">Bila tidak ada, kosongkan.</span>
+                <input id="modify-tokopedia" type="text" class="w-full p-2 border rounded mb-2">
+
+                <label class="block text-sm sm:text-lg font-medium pt-4">Link Shopee</label>
+                <span class="italic text-gray-500">Bila tidak ada, kosongkan.</span>
+                <input id="modify-shopee" type="text" class="w-full p-2 border rounded mb-2">
+                
+                <label class="block text-sm sm:text-lg font-medium pt-4">Apakah produk ini mau direkomendasikan?</label>
+                <input id="modify-recommended" type="checkbox" class="sm:ml-2 scale-175 sm:scale-200">
+                <span class="text-md sm:text-md text-gray-700 italic">Centang bila "Iya"</span>
+            </div>
+
+            <div class="flex justify-end gap-2 mt-4">
+                <button class="bg-gray-500 text-white px-4 py-2 rounded" onclick="closeModifyModal()">Cancel</button>
+                <button id="save-modify-btn" class="bg-blue-500 text-white px-4 py-2 rounded">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="login.js"></script>
+    <script type="module" src="adminDashboard.js"></script>
+    <script type="module" src="SessionTimeout.js"></script>
+    <script>
+
+        function openImageModal(productName, images) {
+        const modal = document.getElementById("imageModal");
+        const modalTitle = document.getElementById("imageModalTitle");
+        const modalContent = document.getElementById("imageModalContent");
+
+        modalTitle.innerText = `${productName} - Images`;
+
+        let imageHTML = "";
+        if (images.length > 0) {
+            imageHTML = images.map(img => `
+                <img src="${img}" alt="Product Image" class="w-full h-auto rounded mb-2 border"
+                    onerror="this.onerror=null; this.src='https://via.placeholder.com/300';">
+            `).join("");
+        } else {
+            imageHTML = `<p class="text-gray-500">No images available.</p>`;
+        }
+
+        modalContent.innerHTML = imageHTML;
+
+        modal.classList.remove("hidden");
+    }
+
+
+    function closeImageModal() {
+        document.getElementById("imageModal").classList.add("hidden");
+    }
+
+    function openModal(productName, contentType, content) {
+        const modal = document.getElementById("textModal");
+        const modalBox = document.getElementById("modalBox");
+        const modalContentWrapper = document.getElementById("modalContentWrapper");
+
+        function safeDecode(str) {
+            try {
+                return decodeURIComponent(str);
+            } catch (e) {
+                return str;
+            }
+        }
+
+        const decodedProductName = safeDecode(productName);
+        const decodedContent = safeDecode(content);
+
+        document.getElementById("modalType").innerText = contentType;
+        document.getElementById("modalProductName").innerText = decodedProductName;
+        document.getElementById("modalContent").innerHTML = decodedContent;
+
+        modal.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
+
+        setTimeout(() => {
+            let contentHeight = modalContentWrapper.scrollHeight;
+
+            if (window.innerWidth < 768) {
+                modalContentWrapper.style.maxHeight = contentHeight > 10 ? "25vh" : "auto";
+            } else {
+                modalContentWrapper.style.maxHeight = contentHeight > 200 ? "35vh" : "auto";
+            }
+        }, 100);
+    }
+
+        function closeModal(event) {
+            const modal = document.getElementById("textModal");
+            
+            if (!event || event.target === modal) {
+                modal.classList.add("hidden");
+                document.body.classList.remove("overflow-hidden");
+            }
+        }
+
+
+    </script>
+</body>
+</html>
