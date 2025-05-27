@@ -8,12 +8,23 @@ Articles, product descriptions, and product specifications are managed using the
 [Visit the Live Site](https://care-lamson.web.app)
 
 ## 📈 Web Features
-- Admin login system with Firebase Authentication
-- Dynamic product and article display from Firestore
-- Fuse.js integration for searching products by category, brand, or name
-- Quill.js integration for writing articles, product descriptions, and product specifications
-- Product & article management via admin dashboard
-- Fully responsive design using Tailwind CSS
+### Admin login system with Firebase Authentication
+![Admin Login Demo](https://raw.githubusercontent.com/Junatho/Project-GIF/refs/heads/main/Lamson/lamson%20admin%20login.gif)
+
+### Dynamic product and article display from Firestore, rendered using JavaScript
+![Product Display Demo](https://raw.githubusercontent.com/Junatho/Project-GIF/refs/heads/main/Lamson/dynamic%20product%20and%20article%20display.gif)
+
+### Fuse.js integration for searching products by category, brand, or name
+![Fuse.js Fuzzy Search Demo](https://raw.githubusercontent.com/Junatho/Project-GIF/refs/heads/main/Lamson/fusejs%20integration.gif)
+
+### Quill.js integration for writing articles, product descriptions, and product specifications
+![Quill Editor Demo](https://raw.githubusercontent.com/Junatho/Project-GIF/refs/heads/main/Lamson/quilljs%20integration.gif)
+
+### Product & article management via admin dashboard
+![Admin Dashboard Demo](https://raw.githubusercontent.com/Junatho/Project-GIF/refs/heads/main/Lamson/product%20and%20article%20management.gif)
+
+### Fully responsive design using Tailwind CSS
+![Responsive Layout Demo](https://raw.githubusercontent.com/Junatho/Project-GIF/refs/heads/main/Lamson/responsive%20design%20tailwind%20css.gif)
 
 ## 🔧 General Info
 - **Frontend:** HTML, Tailwind CSS, JavaScript
