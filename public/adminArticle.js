@@ -10,8 +10,35 @@ setupSidebarToggle();
 setupSearchPopup();
 setupScrollToTop();
 
-// Store your quill instances globally
 const quillInstances = [];
+
+function getSectionsFromQuill() {
+    if (!window.quillSections) {
+        return [];
+    }
+    return window.quillSections.map(({ id, quill }) => {
+        const nameInput = document.querySelector(`#${id} input[name="section-name"]`);
+        const name = nameInput ? nameInput.value.trim() : "";
+        const content = quill.root.innerHTML;
+        return { name, content };
+    });
+}
+
+function resetAddArticleForm() {
+    const form = document.getElementById("add-article-form");
+    if (form) {
+        form.reset();
+    }
+    const container = document.getElementById("article-sections");
+    if (container) {
+        container.innerHTML = "";
+    }
+
+    window.quillSections = [];
+    sectionCounter = 0;
+
+    addNewArticleSection();
+}
 
 document.querySelectorAll(".section-editor").forEach(editorEl => {
   const quill = new Quill(editorEl, {
@@ -27,15 +54,6 @@ document.querySelectorAll(".section-editor").forEach(editorEl => {
   quillInstances.push(quill);
 });
 
-function getSectionsFromQuill() {
-    return window.quillSections.map(({ id, quill }) => {
-        const nameInput = document.querySelector(`#${id} input[name="section-name"]`);
-        const name = nameInput ? nameInput.value.trim() : "";
-        const content = quill.root.innerHTML;
-        return { name, content };
-    });
-}
-
 // Submit button listener
 document.getElementById("submit-article").addEventListener("click", async (e) => {
   e.preventDefault();
@@ -48,10 +66,14 @@ document.getElementById("submit-article").addEventListener("click", async (e) =>
   const sectionTitles = document.querySelectorAll(".section-title-input");
   const sectionsData = getSectionsFromQuill();
 
-  // const sections = Array.from(sectionTitles).map((input, index) => ({
-  //   name: input.value.trim(),
-  //   content: quillInstances[index].root.innerHTML
-  // }));
+    if (!title || !coverImage) {
+        return alert("Judul Artikel dan Cover Image wajib diisi.");
+    }
+
+  const sections = Array.from(sectionTitles).map((input, index) => ({
+    name: input.value.trim(),
+    content: quillInstances[index].root.innerHTML
+  }));
 
   const articleData = {
     title,
@@ -65,7 +87,7 @@ document.getElementById("submit-article").addEventListener("click", async (e) =>
 
   try {
     await addDoc(collection(db, "articles"), articleData);
-    alert("Artikel berhasil disimpan.");
+    alert("Artikel berhasil disimpan!");
     // Optionally reset the form or redirect
   } catch (error) {
     console.error("Error submitting article:", error);
