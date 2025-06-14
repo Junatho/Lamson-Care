@@ -80,11 +80,10 @@ async function handlePasswordChange() {
     await reauthenticateWithCredential(user, credentials);
     await updatePassword(user, newPass);
 
-    // ✅ Refresh the user's session to prevent logout
     await user.reload();
     await auth.currentUser.getIdToken(true);
 
-    console.log("✅ Password updated and session refreshed for user:", auth.currentUser?.email);
+    console.log("Password updated and session refreshed for user:", auth.currentUser?.email);
 
     message.textContent = "Password berhasil diperbarui.";
     message.classList.add("text-green-600");
@@ -99,7 +98,7 @@ async function handlePasswordChange() {
     message.textContent = "Gagal memperbarui password. Periksa password lama Anda.";
     message.classList.add("text-red-600");
     message.classList.remove("hidden");
-    console.error("❌ Password update failed:", error);
+    console.error("Password update failed:", error);
   }
 }
 
