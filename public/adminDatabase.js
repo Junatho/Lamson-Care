@@ -383,8 +383,15 @@ document.getElementById("add-section-btn")?.addEventListener("click", addNewArti
             recommended
         });
     
-        alert("Product added!");
+        alert("Produk berhasil ditambahkan.");
         productForm.reset();
+          if (window.quillDescription) {
+              window.quillDescription.setText('');
+          }
+          if (window.quillSpecification) {
+              window.quillSpecification.setText('');
+          }
+        confirmationCheckbox.checked = false; 
         submitBtn.disabled = false;
     });
 

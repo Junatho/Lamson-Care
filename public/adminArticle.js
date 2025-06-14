@@ -27,6 +27,15 @@ document.querySelectorAll(".section-editor").forEach(editorEl => {
   quillInstances.push(quill);
 });
 
+function getSectionsFromQuill() {
+    return window.quillSections.map(({ id, quill }) => {
+        const nameInput = document.querySelector(`#${id} input[name="section-name"]`);
+        const name = nameInput ? nameInput.value.trim() : "";
+        const content = quill.root.innerHTML;
+        return { name, content };
+    });
+}
+
 // Submit button listener
 document.getElementById("submit-article").addEventListener("click", async (e) => {
   e.preventDefault();
@@ -37,24 +46,26 @@ document.getElementById("submit-article").addEventListener("click", async (e) =>
   const productLink = document.getElementById("product-link").value.trim();
 
   const sectionTitles = document.querySelectorAll(".section-title-input");
+  const sectionsData = getSectionsFromQuill();
 
-  const sections = Array.from(sectionTitles).map((input, index) => ({
-    name: input.value.trim(),
-    content: quillInstances[index].root.innerHTML
-  }));
+  // const sections = Array.from(sectionTitles).map((input, index) => ({
+  //   name: input.value.trim(),
+  //   content: quillInstances[index].root.innerHTML
+  // }));
 
   const articleData = {
     title,
     meta,
     coverImage,
     productLink,
-    sections,
+    //sections,
+    sectionsData,
     createdAt: serverTimestamp()
   };
 
   try {
     await addDoc(collection(db, "articles"), articleData);
-    alert("Artikel berhasil disimpan!");
+    alert("Artikel berhasil disimpan.");
     // Optionally reset the form or redirect
   } catch (error) {
     console.error("Error submitting article:", error);
