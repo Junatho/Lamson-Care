@@ -12,7 +12,6 @@ setupScrollToTop();
 
 let allArticles = [];
 let CURRENT_ARTICLE_ID = null;
-let sectionCounter = 0;
 window.quillSections = [];
 let modifySectionCounter = 0;
 window.modifyQuillSections = [];
@@ -21,7 +20,6 @@ window.viewArticle         = viewArticle;
 window.closeModifyArticle  = closeModifyArticle;
 
 document.addEventListener("DOMContentLoaded", () => {
-  addNewArticleSection();
   loadArticles();
   document
     .getElementById("modify-article-form")
@@ -50,25 +48,14 @@ function loadArticles() {
         const id = article.firestoreId;
 
             const card = `
-            <div
-                class="flex-none w-64 md:w-72 lg:w-80 snap-start
-                    p-4 bg-white border border-gray-300
-                    rounded-lg shadow hover:shadow-lg hover:bg-[#c7daf4]
-                    transition-colors duration-300"
-            >
-                <img src="${article.coverImage}" alt="Cover"
-                    class="w-full h-48 object-cover rounded" />
-                <h3 class="mt-4 text-xl font-semibold">${title}</h3>
+            <div class="flex-none w-64 md:w-72 lg:w-80 snap-start p-4 bg-white border border-gray-300 rounded-lg shadow hover:shadow-lg hover:bg-[#c7daf4] transition-colors duration-300">
+                <img src="${article.coverImage}" alt="Cover" class="w-full h-48 object-cover rounded" />
+                <h3 class="mt-4 text-xl font-semibold h-14 line-clamp-2">${title}</h3>
                 <p class="text-md text-gray-600 mt-1 mb-4">Penulis: ${article.meta || "-"}</p>
                 <hr class="border-gray-300">
-                <!-- Lihat Produk -->
                 ${
                 link
-                    ? `<button
-                        onclick="event.stopPropagation(); window.open('${link}','_blank')"
-                        class="mt-4 w-full flex items-center justify-center bg-blue-500 hover:bg-blue-600
-                                text-white px-3 py-1 rounded text-sm space-x-2"
-                    >
+                    ? `<button onclick="event.stopPropagation(); window.open('${link}','_blank')" class="mt-4 w-full flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm space-x-2">
                         <i class="fas fa-external-link-alt"></i>
                         <span>Lihat Produk</span>
                     </button>`
@@ -77,32 +64,21 @@ function loadArticles() {
                         <span>Link produk belum tersedia</span>
                     </div>`
                 }
-
-                <!-- Ubah Artikel -->
-                <button
-                onclick="event.stopPropagation(); openModifyArticle('${id}')"
-                class="mt-2 w-full flex items-center justify-center bg-yellow-500 hover:bg-yellow-600
-                        text-white px-3 py-1 rounded text-sm space-x-2"
-                >
-                <i class="fas fa-edit"></i>
-                <span>Ubah Artikel</span>
+                <button onclick="event.stopPropagation(); openModifyArticle('${id}')" class="mt-2 w-full flex items-center justify-center bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm space-x-2">
+                    <i class="fas fa-edit"></i>
+                    <span>Ubah Artikel</span>
                 </button>
-
-                <!-- Hapus Artikel -->
-                <button
-                onclick="event.stopPropagation(); deleteArticle('${id}')"
-                class="mt-2 w-full flex items-center justify-center bg-red-500 hover:bg-red-600
-                        text-white px-3 py-1 rounded text-sm space-x-2"
-                >
-                <i class="fas fa-trash"></i>
-                <span>Hapus Artikel</span>
+                <button onclick="event.stopPropagation(); deleteArticle('${id}')" class="mt-2 w-full flex items-center justify-center bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm space-x-2">
+                    <i class="fas fa-trash"></i>
+                    <span>Hapus Artikel</span>
                 </button>
             </div>
             `;
+
         articleList.insertAdjacentHTML("beforeend", card);
         });
     }, err => console.error("Articles listener error:", err));
-    }
+}
 
 async function deleteArticle(articleId) {
   if (!confirm("Apakah Anda yakin ingin menghapus artikel ini?")) return;
@@ -233,55 +209,6 @@ function getModifiedSectionsFromQuill() {
     return { name, content };
   });
 }
-
-function addNewArticleSection() {
-  const sid = `section-${sectionCounter}`;
-  const eid = `editor-${sectionCounter}`;
-  const container = document.getElementById("article-sections");
-
-  const tpl = `
-    <div id="${sid}" class="bg-white p-4 border rounded shadow space-y-4 relative">
-      <label class="block font-semibold">Nama Bagian</label>
-      <input type="text" name="section-name"
-             class="border p-2 w-full rounded" required
-             placeholder="Contoh: Pendahuluan" />
-
-      <label class="block font-semibold">Isi Konten</label>
-      <div id="${eid}" class="h-48 bg-white"></div>
-
-      <button type="button"
-              class="remove-section-btn bg-red-600 text-white px-3 py-1 rounded
-                     hover:bg-red-700 absolute top-0 right-2">
-        🗑
-      </button>
-    </div>
-  `;
-  container.insertAdjacentHTML("beforeend", tpl);
-
-  const qi = new Quill(`#${eid}`, {
-    theme: "snow",
-    modules: { toolbar: [["bold", "italic", "underline", "link"]] },
-  });
-
-  window.quillSections.push({ id: sid, quill: qi });
-  sectionCounter++;
-
-  document
-    .querySelector(`#${sid} .remove-section-btn`)
-    .addEventListener("click", () => {
-      document.getElementById(sid).remove();
-      window.quillSections = window.quillSections.filter(x => x.id !== sid);
-    });
-}
-
-document.getElementById("remove-section-btn")?.addEventListener("click", () => {
-  if (sectionCounter > 0) {
-    sectionCounter--;
-    document.getElementById(`section-${sectionCounter}`)?.remove();
-    window.quillSections.pop();
-  }
-});
-document.getElementById("add-section-btn")?.addEventListener("click", addNewArticleSection);
 
    document.addEventListener("DOMContentLoaded", async () => {
     const productForm = document.getElementById("add-product-form");

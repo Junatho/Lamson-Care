@@ -6,11 +6,47 @@ import { setupSidebarToggle, setupSearchPopup, setupScrollToTop } from "./common
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-setupSidebarToggle();
-setupSearchPopup();
-setupScrollToTop();
+let sectionCounter = 0;
 
-const quillInstances = [];
+function addNewArticleSection() {
+  const sid = `section-${sectionCounter}`;
+  const eid = `editor-${sectionCounter}`;
+  const container = document.getElementById("article-sections");
+
+  if (!container) return; // Prevent error if container doesn't exist
+
+  const tpl = `
+    <div id="${sid}" class="bg-white p-4 border rounded shadow space-y-4 relative">
+      <label class="block font-semibold">Nama Bagian</label>
+      <input type="text" name="section-name"
+             class="border p-2 w-full rounded" required
+             placeholder="Contoh: Pendahuluan" />
+
+      <label class="block font-semibold">Isi Konten</label>
+      <div id="${eid}" class="h-48 bg-white"></div>
+
+      <button type="button"
+              class="remove-section-btn bg-red-600 text-white px-3 py-1 rounded
+                     hover:bg-red-700 absolute top-0 right-2">
+        🗑
+      </button>
+    </div>
+  `;
+  container.insertAdjacentHTML("beforeend", tpl);
+
+  const qi = new Quill(`#${eid}`, {
+    theme: "snow",
+    modules: { toolbar: [["bold", "italic", "underline", "link"]] },
+  });
+
+  window.quillSections.push({ id: sid, quill: qi });
+  sectionCounter++;
+
+  document.querySelector(`#${sid} .remove-section-btn`).addEventListener("click", () => {
+      document.getElementById(sid).remove();
+      window.quillSections = window.quillSections.filter(x => x.id !== sid);
+    });
+}
 
 function getSectionsFromQuill() {
     if (!window.quillSections) {
@@ -37,60 +73,59 @@ function resetAddArticleForm() {
     window.quillSections = [];
     sectionCounter = 0;
 
+    // This now works correctly because addNewArticleSection is in this file
     addNewArticleSection();
 }
 
-document.querySelectorAll(".section-editor").forEach(editorEl => {
-  const quill = new Quill(editorEl, {
-    theme: 'snow',
-    modules: {
-      toolbar: [
-        ['bold', 'italic', 'underline'],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        ['link', 'image']
-      ]
+// Setup page on load
+document.addEventListener("DOMContentLoaded", () => {
+    setupSidebarToggle();
+    setupSearchPopup();
+    setupScrollToTop();
+    addNewArticleSection(); // Initialize the form with one section
+
+    // Listener for the "Submit" button
+    document.getElementById("submit-article").addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById("article-title").value.trim();
+        const meta = document.getElementById("article-meta").value.trim();
+        const coverImage = document.getElementById("article-cover").value.trim();
+        const productLink = document.getElementById("product-link").value.trim();
+        const sectionsData = getSectionsFromQuill();
+
+        if (!title || !coverImage) {
+            return alert("Harap mengisi semua bagian form.");
+        }
+
+        const articleData = {
+            title,
+            meta,
+            coverImage,
+            productLink,
+            sectionsData,
+            createdAt: serverTimestamp()
+        };
+
+        try {
+            await addDoc(collection(db, "articles"), articleData);
+            alert("Artikel berhasil disimpan!");
+            resetAddArticleForm(); // Automatic reset on success
+        } catch (error) {
+            console.error("Error submitting article:", error);
+            alert("Terjadi kesalahan saat menyimpan artikel.");
+        }
+    });
+
+    // Listener for the manual "Clear Form" button
+    const clearBtn = document.getElementById("clear-article-form-btn");
+    if(clearBtn) {
+        clearBtn.addEventListener("click", resetAddArticleForm);
     }
-  });
-  quillInstances.push(quill);
-});
 
-// Submit button listener
-document.getElementById("submit-article").addEventListener("click", async (e) => {
-  e.preventDefault();
-
-  const title = document.getElementById("article-title").value.trim();
-  const meta = document.getElementById("article-meta").value.trim();
-  const coverImage = document.getElementById("article-cover").value.trim();
-  const productLink = document.getElementById("product-link").value.trim();
-
-  const sectionTitles = document.querySelectorAll(".section-title-input");
-  const sectionsData = getSectionsFromQuill();
-
-    if (!title || !coverImage) {
-        return alert("Judul Artikel dan Cover Image wajib diisi.");
+    // Listener for the "+ Tambah Bagian" button
+    const addSectionBtn = document.getElementById("add-section-btn");
+    if (addSectionBtn) {
+        addSectionBtn.addEventListener("click", addNewArticleSection);
     }
-
-  const sections = Array.from(sectionTitles).map((input, index) => ({
-    name: input.value.trim(),
-    content: quillInstances[index].root.innerHTML
-  }));
-
-  const articleData = {
-    title,
-    meta,
-    coverImage,
-    productLink,
-    //sections,
-    sectionsData,
-    createdAt: serverTimestamp()
-  };
-
-  try {
-    await addDoc(collection(db, "articles"), articleData);
-    alert("Artikel berhasil disimpan!");
-    // Optionally reset the form or redirect
-  } catch (error) {
-    console.error("Error submitting article:", error);
-    alert("Terjadi kesalahan saat menyimpan artikel.");
-  }
 });
