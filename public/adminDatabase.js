@@ -18,6 +18,7 @@ window.modifyQuillSections = [];
 window.openModifyArticle   = openModifyArticle;
 window.viewArticle         = viewArticle;
 window.closeModifyArticle  = closeModifyArticle;
+let existingBrands = new Set();
 
 document.addEventListener("DOMContentLoaded", () => {
   loadArticles();
@@ -28,6 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("add-modify-section-btn")
     .addEventListener("click", () => addModifyArticleSection());
 })
+
+function normalizeString(str) {
+    if (!str) return "";
+    return str.toLowerCase().replace(/\s+/g, '');
+}
 
 function loadArticles() {
   const articleList = document.getElementById("article-list");
@@ -216,6 +222,25 @@ function getModifiedSectionsFromQuill() {
     const submitBtn = document.getElementById("submit-btn");
     const confirmationCheckbox = document.getElementById("confirm-info");
 
+    const brandRadioExisting = document.getElementById('brand-exists');
+    const brandRadioNew = document.getElementById('brand-radio-new');
+    const brandSelect = document.getElementById('brand-select');
+    const brandInputNew = document.getElementById('brand-input-new');
+
+    if (brandRadioExisting && brandRadioNew) {
+        brandRadioExisting.addEventListener('change', () => {
+            brandSelect.classList.remove('hidden');
+            brandInputNew.classList.add('hidden');
+        });
+
+        brandRadioNew.addEventListener('change', () => {
+            brandSelect.classList.add('hidden');
+            brandInputNew.classList.remove('hidden');
+        });
+    }
+
+    populateAddProductBrandDropdown();
+
     const descEditorContainer = document.getElementById('description-editor');
     if (descEditorContainer && window.Quill) {
         window.quillDescription = new Quill('#description-editor', {
@@ -268,7 +293,39 @@ function getModifiedSectionsFromQuill() {
     
         const name = document.getElementById("name").value.trim();
         const category = [...document.querySelectorAll('input[name="category"]:checked')].map(cb => cb.value);
-        const brand = document.getElementById("brand").value.trim() || "N/A";
+        //const brand = document.getElementById("brand").value.trim() || "N/A";
+
+        const isNewBrand = document.getElementById('brand-radio-new').checked;
+        let brand = isNewBrand
+            ? document.getElementById('brand-input-new').value.trim()
+            : document.getElementById('brand-select').value;
+
+        if (!brand) {
+            alert("Merek tidak boleh kosong. Harap pilih dari daftar merek yang ada atau tambahkan yang baru.");
+            submitBtn.disabled = false;
+            return;
+        }
+
+        if (isNewBrand) {
+            const normalizedNewBrand = normalizeString(brand);
+            let similarBrandFound = null;
+
+            for (const existing of existingBrands) {
+                const normalizedExistingBrand = normalizeString(existing);
+
+                if (normalizedNewBrand.includes(normalizedExistingBrand) || normalizedExistingBrand.includes(normalizedNewBrand)) {
+                    similarBrandFound = existing;
+                    break;
+                }
+            }
+
+            if (similarBrandFound) {
+                alert(`Merek yang Anda masukkan ("${brand}") sangat mirip dengan merek yang sudah terdaftar ("${similarBrandFound}"). Harap periksa kembali atau pilih dari daftar merek yang ada.`);
+                submitBtn.disabled = false;
+                return;
+            }
+        }
+
         const registrationNumber = document.getElementById("registrationNumber").value.trim();
         const description   = quillDescription.root.innerHTML.trim();
         const specification = quillSpecification.root.innerHTML.trim();
@@ -471,6 +528,40 @@ if (modifySpecContainer && window.Quill) {
     });
 }
 
+  async function populateAddProductBrandDropdown() {
+      const brandSelect = document.getElementById('brand-select');
+      if (!brandSelect) {
+          return;
+      }
+
+      try {
+          const productsSnapshot = await getDocs(collection(db, "products"));
+          const brands = new Set();
+
+          productsSnapshot.forEach(doc => {
+              const product = doc.data();
+              if (product.brand && product.brand !== "N/A") {
+                  brands.add(product.brand);
+              }
+          });
+
+          existingBrands = brands;
+
+          brandSelect.innerHTML = '<option value="">-- Pilih Merek --</option>';
+          const sortedBrands = Array.from(brands).sort();
+          sortedBrands.forEach(brand => {
+              const option = document.createElement('option');
+              option.value = brand;
+              option.textContent = brand;
+              brandSelect.appendChild(option);
+          });
+
+      } catch (error) {
+          console.error("Error populating brand dropdown:", error);
+          brandSelect.innerHTML = '<option value="">Gagal memuat merek</option>';
+      }
+}
+
     document.getElementById("filter-category")?.addEventListener("change", applyFilters);
     document.getElementById("filter-brand")?.addEventListener("change", applyFilters);
     document.getElementById("filter-name")?.addEventListener("input",  applyFilters);
@@ -498,7 +589,7 @@ if (modifySpecContainer && window.Quill) {
 
     function populateFilterOptions(products) {
         const categorySelect = document.getElementById("filter-category");
-        const brandSelect = document.getElementById("filter-brand");
+        const brandFilterSelect = document.getElementById("filter-brand");
 
         const categories = new Set();
         const brands = new Set();
@@ -506,18 +597,24 @@ if (modifySpecContainer && window.Quill) {
         products.forEach(p => {
             if (Array.isArray(p.category)) {
                 p.category.forEach(cat => categories.add(cat));
-            } else {
+            } else if (p.category) {
                 categories.add(p.category);
             }
 
-            if (p.brand) brands.add(p.brand);
+            if (p.brand && p.brand !== "N/A") {
+                brands.add(p.brand);
+            }
         });
 
-        categorySelect.innerHTML = '<option value="">-</option>' +
-            Array.from(categories).sort().map(cat => `<option value="${cat}">${cat}</option>`).join("");
+        if (categorySelect) {
+            categorySelect.innerHTML = '<option value="">-</option>' +
+                Array.from(categories).sort().map(cat => `<option value="${cat}">${cat}</option>`).join("");
+        }
 
-        brandSelect.innerHTML = '<option value="">-</option>' +
-            Array.from(brands).sort().map(brand => `<option value="${brand}">${brand}</option>`).join("");
+        if (brandFilterSelect) {
+            brandFilterSelect.innerHTML = '<option value="">-</option>' +
+                Array.from(brands).sort().map(brand => `<option value="${brand}">${brand}</option>`).join("");
+        }
     }
 
     async function openImageModal(productName, imagesEncoded) {

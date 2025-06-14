@@ -13,7 +13,7 @@ function addNewArticleSection() {
   const eid = `editor-${sectionCounter}`;
   const container = document.getElementById("article-sections");
 
-  if (!container) return;
+  if (!container) return; // Prevent error if container doesn't exist
 
   const tpl = `
     <div id="${sid}" class="bg-white p-4 border rounded shadow space-y-4 relative">
@@ -73,6 +73,7 @@ function resetAddArticleForm() {
     window.quillSections = [];
     sectionCounter = 0;
 
+    // This now works correctly because addNewArticleSection is in this file
     addNewArticleSection();
 }
 
@@ -81,8 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
     setupSidebarToggle();
     setupSearchPopup();
     setupScrollToTop();
-    addNewArticleSection();
+    addNewArticleSection(); // Initialize the form with one section
 
+    // Listener for the "Submit" button
     document.getElementById("submit-article").addEventListener("click", async (e) => {
         e.preventDefault();
 
@@ -108,18 +110,20 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             await addDoc(collection(db, "articles"), articleData);
             alert("Artikel berhasil disimpan!");
-            resetAddArticleForm();
+            resetAddArticleForm(); // Automatic reset on success
         } catch (error) {
             console.error("Error submitting article:", error);
             alert("Terjadi kesalahan saat menyimpan artikel.");
         }
     });
 
+    // Listener for the manual "Clear Form" button
     const clearBtn = document.getElementById("clear-article-form-btn");
     if(clearBtn) {
         clearBtn.addEventListener("click", resetAddArticleForm);
     }
 
+    // Listener for the "+ Tambah Bagian" button
     const addSectionBtn = document.getElementById("add-section-btn");
     if (addSectionBtn) {
         addSectionBtn.addEventListener("click", addNewArticleSection);
